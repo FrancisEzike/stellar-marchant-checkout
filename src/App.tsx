@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import type { FormEvent, ReactNode } from 'react'
 import {
   Activity, ArrowDownRight, ArrowUpRight, Bell, Box, Check, ChevronDown,
   ChevronRight, CircleHelp, Clipboard, Command, CreditCard, Download,
@@ -60,14 +61,14 @@ export default function App() {
 
   function changeView(next: View) { setView(next); setSearch(''); setMobileOpen(false) }
   function openProduct(product?: Product) { setEditing(product || null); setProductForm(product ? { name: product.name, description: product.description, price: String(product.price) } : { name: '', description: '', price: '' }); setModal('product') }
-  function saveProduct(e: React.FormEvent) {
+  function saveProduct(e: FormEvent) {
     e.preventDefault()
     const product: Product = { id: editing?.id || uid(), name: productForm.name.trim(), description: productForm.description.trim(), price: Number(productForm.price), active: editing?.active ?? true }
     if (!product.name || product.price <= 0) return
     setData(d => ({ ...d, products: editing ? d.products.map(p => p.id === editing.id ? product : p) : [product, ...d.products] }))
     setModal(null); setToast(editing ? 'Product updated' : 'Product added to catalog')
   }
-  function createLink(e: React.FormEvent) {
+  function createLink(e: FormEvent) {
     e.preventDefault()
     const amount = Number(linkForm.amount)
     if (!linkForm.title.trim() || amount <= 0) return
@@ -120,10 +121,10 @@ export default function App() {
   </div>
 }
 
-function PageHeading({ eyebrow, title, description, action }: { eyebrow: string; title: string; description: string; action?: React.ReactNode }) {
+function PageHeading({ eyebrow, title, description, action }: { eyebrow: string; title: string; description: string; action?: ReactNode }) {
   return <div className="page-heading"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>{action}</div>
 }
-function Empty({ icon, title, text, action, onAction }: { icon: React.ReactNode; title: string; text: string; action: string; onAction: () => void }) {
+function Empty({ icon, title, text, action, onAction }: { icon: ReactNode; title: string; text: string; action: string; onAction: () => void }) {
   return <div className="empty-state"><div className="empty-icon">{icon}</div><h3>{title}</h3><p>{text}</p><button className="button-primary" onClick={onAction}><Plus size={16} /> {action}</button></div>
 }
 function Overview({ data, volume, paidCount, onView, onAddProduct, onAddLink, onDemo }: { data: StoreData; volume: number; paidCount: number; onView: (v: View) => void; onAddProduct: () => void; onAddLink: () => void; onDemo: () => void }) {
